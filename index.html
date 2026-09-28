@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Mercado Inmobiliario SD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<style>
+:root{
+  --ground:#F3F5F3; --panel:#FFFFFF; --ink:#13232B; --ink-2:#4A5C63; --ink-3:#7F9095;
+  --line:#DCE3E1; --line-2:#EBF0EE;
+  --lagoon:#0B6E75; --lagoon-soft:#D6ECEC; --amber:#B7791A; --amber-soft:#F6E7C9;
+  --down:#B4432E; --up:#2E7D4F;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E171B; --panel:#152227; --ink:#E4ECEA; --ink-2:#A6B6B7; --ink-3:#71858A;
+    --line:#26363C; --line-2:#1C2B30; --lagoon:#4DBBC0; --lagoon-soft:#16393C; --amber:#E0A94A; --amber-soft:#3A2E17;
+    --down:#E57A63; --up:#6CC08F;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E171B; --panel:#152227; --ink:#E4ECEA; --ink-2:#A6B6B7; --ink-3:#71858A;
+  --line:#26363C; --line-2:#1C2B30; --lagoon:#4DBBC0; --lagoon-soft:#16393C; --amber:#E0A94A; --amber-soft:#3A2E17;
+  --down:#E57A63; --up:#6CC08F;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:15px/1.5 var(--body);padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:20px}
+h1,h2,h3{font-family:var(--display);font-stretch:88%;margin:0;text-wrap:balance}
+h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.01em;line-height:1.05}
+h2{font-size:17px;font-weight:700}
+.eyebrow{font:500 11px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-2)} .faint{color:var(--ink-3)}
+a{color:var(--lagoon)}
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.status{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font:500 12px/1.4 var(--mono);white-space:nowrap}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+.chip.live .dot{background:var(--amber);animation:pulse 1.6s ease-in-out infinite}
+.chip.ok .dot{background:var(--up)}
+.chip.bad .dot{background:var(--down)}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.chip.live .dot{animation:none}}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--lagoon);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:5px 12px;font-size:13px}
+.btn:hover{border-color:var(--lagoon)}
+.filters{display:flex;flex-wrap:wrap;gap:14px 22px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.fgroup{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.fgroup .eyebrow{margin-right:4px}
+.seg{border:1px solid var(--line);background:transparent;border-radius:7px;padding:3px 10px;font-size:13px}
+.seg[aria-pressed="true"]{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.kpi{background:var(--panel);padding:14px 16px;display:grid;gap:4px;align-content:start}
+.kpi .v{font:600 clamp(22px,3vw,28px)/1.1 var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .s{font-size:12.5px;color:var(--ink-2)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px}
+@media (max-width:880px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
+.phead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 12px}
+.note{font-size:12.5px;color:var(--ink-2)}
+.err{font-size:13px;color:var(--down)}
+/* sector ranking */
+.rank{display:grid;gap:2px}
+.rrow{display:grid;grid-template-columns:minmax(110px,190px) minmax(0,1fr) 44px;gap:10px;align-items:center;padding:5px 6px;border-radius:6px;border:0;background:transparent;text-align:left;width:100%}
+.rrow:hover{background:var(--line-2)}
+.rrow[aria-pressed="true"]{background:var(--lagoon-soft)}
+.rname{font-size:13.5px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rname small{display:block;color:var(--ink-3);font:11px var(--mono)}
+.track{position:relative;height:18px}
+.track .iqr{position:absolute;top:8px;height:2px;background:var(--lagoon);opacity:.45;border-radius:2px}
+.track .med{position:absolute;top:3px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--lagoon);border:2px solid var(--panel)}
+.track .lab{position:absolute;top:-1px;font:11px var(--mono);color:var(--ink-2);white-space:nowrap}
+.rn{font:11.5px var(--mono);color:var(--ink-3);text-align:right}
+.axis{display:grid;grid-template-columns:minmax(110px,190px) minmax(0,1fr) 44px;gap:10px;padding-inline:6px}
+.axis .ticks{position:relative;height:16px;border-bottom:1px solid var(--line)}
+.axis .ticks span{position:absolute;transform:translateX(-50%);font:10.5px var(--mono);color:var(--ink-3)}
+/* heat table */
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}
+td.r,th.r{text-align:right}
+.heat td.cell{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.heat td.cell small{display:block;color:var(--ink-3);font-size:10.5px}
+svg text{fill:var(--ink-3);font:10.5px var(--mono)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--ink-2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.pill{display:inline-block;padding:1px 7px;border-radius:999px;font:500 11px var(--mono);background:var(--line-2);color:var(--ink-2);white-space:nowrap}
+.pill.cut{background:var(--amber-soft);color:var(--amber)}
+.list td a{color:var(--ink);text-decoration:none}
+.list td a:hover{color:var(--lagoon);text-decoration:underline}
+.ttl{max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gate{padding:28px 20px;text-align:center;display:grid;gap:10px;justify-items:center}
+.skel{height:14px;border-radius:4px;background:var(--line-2)}
+footer{font-size:12.5px;color:var(--ink-3);display:grid;gap:6px;max-width:80ch}
+
+.login{max-width:380px;margin:40px auto;width:100%}
+.lform{display:grid;gap:8px}
+.lform label{font-size:13px;color:var(--ink-2)}
+.lform input{font:inherit;padding:9px 11px;border-radius:8px;border:1px solid var(--line);background:var(--ground);color:var(--ink)}
+.lform input:focus-visible{outline:2px solid var(--lagoon);outline-offset:1px}
+.btn.primary{background:var(--lagoon);color:#fff;border-color:var(--lagoon);padding:9px 14px;font-weight:600;margin-top:6px}
+.btn.primary:disabled{opacity:.6;cursor:progress}
+.linkbtn{background:none;border:0;color:var(--lagoon);font-size:13px;justify-self:start;padding:0;text-decoration:underline}
+#app[hidden]{display:none!important}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div style="display:grid;gap:6px">
+      <span class="eyebrow">Apartamentos en venta · Provincia Santo Domingo + DN</span>
+      <h1>Mercado Inmobiliario SD</h1>
+      <span class="muted" style="font-size:14px">Precios de oferta de Corotos, RE/MAX, Plusval, Tu Casa RD y ApartamentosRD, actualizados cada semana. Valores en US$; las publicaciones en RD$ se convierten a la tasa de la corrida.</span>
+    </div>
+    <div class="status">
+      <span class="chip" id="runChip"><span class="dot"></span><span id="runText">Conectando…</span></span>
+      <span class="chip" id="fxChip" hidden></span>
+      <button class="btn" id="refresh" type="button">Actualizar</button>
+      <button class="btn" id="logout" type="button" hidden>Salir</button>
+    </div>
+  </header>
+
+  <section id="login" class="panel login" hidden aria-labelledby="loginTitle">
+    <h2 id="loginTitle">Entrar</h2>
+    <form id="loginForm" class="lform" novalidate>
+      <label for="email">Correo</label>
+      <input id="email" name="email" type="email" autocomplete="username" required>
+      <label for="password">Contraseña</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="btn primary" id="loginBtn" type="submit">Entrar</button>
+      <p class="err" id="loginErr" role="alert"></p>
+      <button class="linkbtn" id="forgot" type="button">Olvidé mi contraseña</button>
+    </form>
+    <form id="resetForm" class="lform" hidden novalidate>
+      <p class="muted">Escribe tu nueva contraseña (mínimo 10 caracteres).</p>
+      <label for="newpass">Nueva contraseña</label>
+      <input id="newpass" type="password" autocomplete="new-password" minlength="10" required>
+      <button class="btn primary" type="submit">Guardar contraseña</button>
+      <p class="err" id="resetErr" role="alert"></p>
+    </form>
+  </section>
+
+  <div id="gate" class="panel gate" hidden></div>
+
+  <div id="app" hidden style="display:contents">
+
+  <nav class="filters" aria-label="Filtros">
+    <div class="fgroup" id="fMun"><span class="eyebrow">Municipio</span></div>
+    <div class="fgroup" id="fBed"><span class="eyebrow">Habitaciones</span></div>
+    <div class="fgroup" id="fCond"><span class="eyebrow">Condición</span></div>
+    <div class="fgroup" id="fSrc"><span class="eyebrow">Fuente</span></div>
+  </nav>
+
+  <section class="kpis" id="kpis" aria-label="Resumen"></section>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="phead"><h2>Mediana US$/m² por sector</h2><span class="note">Punto = mediana · línea = 50% central · haz clic en un sector para ver sus publicaciones</span></div>
+      <div id="sectors"><div class="skel"></div></div>
+    </section>
+    <div style="display:grid;gap:20px;align-content:start">
+      <section class="panel">
+        <div class="phead"><h2>Distribución del precio por m²</h2><span class="note" id="histNote"></span></div>
+        <div id="hist"></div>
+      </section>
+      <section class="panel">
+        <div class="phead"><h2>US$/m² por municipio y habitaciones</h2></div>
+        <div class="tbl-wrap" id="heat"></div>
+        <span class="note">Mediana US$/m², con la cantidad de publicaciones debajo. Las celdas con menos de 5 publicaciones quedan en blanco.</span>
+      </section>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="phead"><h2>Publicaciones nuevas por semana</h2><span class="note">Según la semana en que aparecieron en el portal</span></div>
+      <div id="weekly"></div>
+    </section>
+    <section class="panel">
+      <div class="phead"><h2>Cambios de precio recientes</h2><span class="note">Detectados entre corridas semanales</span></div>
+      <div id="cuts"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="phead">
+      <h2 id="listTitle">Publicaciones</h2>
+      <div class="fgroup" id="fSort"><span class="eyebrow">Orden</span></div>
+    </div>
+    <div class="tbl-wrap" id="list"></div>
+  </section>
+
+  <section class="panel">
+    <div class="phead"><h2>Fuentes</h2><span class="note">Cada portal se recorre una vez por semana. Una misma unidad publicada en varios portales cuenta una sola vez.</span></div>
+    <div class="tbl-wrap" id="sources"></div>
+  </section>
+
+  <section class="panel">
+    <div class="phead">
+      <h2>Para revisar <span class="pill" id="revCount"></span></h2>
+      <span class="note">Publicaciones con precio o US$/m² sospechoso que no se pudo corregir con el texto. Están fuera de las estadísticas.</span>
+    </div>
+    <div class="tbl-wrap" id="review"></div>
+  </section>
+
+  <footer>
+    <span id="quality"></span>
+    <span>Son precios de oferta, no de cierre. Cuando el precio publicado no cuadra con el área, se busca el precio en el título y la descripción; si no se puede corregir con confianza, la publicación pasa a "Para revisar". Las publicaciones repetidas de la misma unidad por un mismo vendedor cuentan una vez. El sector sale de la página de cada publicación y se va completando a medida que el scraper las lee.</span>
+  </footer>
+</div>
+</div>
+
+<script>
+const MUNS = ["Distrito Nacional","Santo Domingo Este","Santo Domingo Oeste","Santo Domingo Norte"];
+const MUN_SHORT = {"Distrito Nacional":"DN","Santo Domingo Este":"SDE","Santo Domingo Oeste":"SDO","Santo Domingo Norte":"SDN"};
+const BEDS = [["all","Todas"],["1","1"],["2","2"],["3","3"],["4","4+"]];
+const CONDS = [["all","Todas"],["Nuevo","Nuevo"],["Reventa","Reventa"],["En planos","En planos"]];
+const SORTS = [["cheap","Menor US$/m²"],["new","Más recientes"],["price","Menor precio"]];
+const SOURCES = { corotos: "Corotos", remax: "RE/MAX", plusval: "Plusval", tucasard: "Tu Casa RD", apartamentosrd: "ApartamentosRD" };
+const st = { mun:"all", bed:"all", cond:"all", src:"all", sector:null, sort:"cheap" };
+let ready = false;
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k,v] of Object.entries(attrs)) { if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v); } for (const k of kids) if (k != null) e.append(k); return e; };
+const usd = (v) => v == null ? "–" : "US$" + Math.round(v).toLocaleString("en-US");
+const k = (v) => v == null ? "–" : v >= 1e6 ? "US$" + (v/1e6).toFixed(2) + "M" : "US$" + Math.round(v/1000) + "k";
+const n0 = (v) => v == null ? "–" : Math.round(v).toLocaleString("en-US");
+
+function segGroup(id, opts, key, extra) {
+  const g = $(id);
+  for (const [val, label] of opts) {
+    g.append(el("button", { class: "seg", type: "button", "aria-pressed": String(st[key] === val), "data-v": val, text: label,
+      onclick: () => { st[key] = val; if (extra) extra(); for (const b of g.querySelectorAll(".seg")) b.setAttribute("aria-pressed", String(b.dataset.v === st[key])); key === "sort" ? loadList() : loadAll(); } }));
+  }
+}
+segGroup("fMun", [["all","Todos"], ...MUNS.map(m => [m, MUN_SHORT[m]])], "mun", () => { st.sector = null; });
+segGroup("fBed", BEDS, "bed");
+segGroup("fCond", CONDS, "cond");
+segGroup("fSrc", [["all","Todas"], ...Object.entries(SOURCES)], "src", () => { st.sector = null; });
+segGroup("fSort", SORTS, "sort");
+
+
+// ---- data (Supabase RPCs, protected by login) ------------------------------
+const SUPABASE_URL = "https://okmebsmnbpqkrqjzgxlw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_rfvWEgo1FsOAQyORb7NyaA_AX4KT-Wj";   // public by design; data access is enforced in the database
+const supa = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+
+const val = (v) => v === "all" ? null : v;
+const params = () => ({ p_mun: val(st.mun), p_bed: val(st.bed), p_cond: val(st.cond), p_src: val(st.src) });
+async function rpc(fn, args) {
+  const { data, error } = await supa.rpc(fn, args);
+  if (error) throw error;
+  return data;
+}
+function explain(e) {
+  const m = String(e?.message || e || "");
+  if (e?.code === "42501" || /not authorized|permission denied/i.test(m)) return "Tu cuenta no tiene acceso a estos datos.";
+  if (/jwt|expired|refresh token/i.test(m)) return "Tu sesión venció. Vuelve a entrar.";
+  if (/failed to fetch|network|load failed/i.test(m)) return "No hay conexión con el servidor. Revisa tu internet y prueba Actualizar.";
+  return "No se pudieron cargar los datos: " + m.slice(0, 160);
+}
+function pageError(e) {
+  const g = $("gate"); g.hidden = false; g.replaceChildren(el("h2", { text: "Datos no disponibles" }), el("p", { class: "muted", text: explain(e) }));
+  $("runText").textContent = "Sin conexión"; $("runChip").className = "chip bad";
+  if (e?.code === "42501" || /jwt|expired/i.test(String(e?.message))) setTimeout(() => supa.auth.signOut(), 2500);
+}
+
+let seq = 0;
+async function loadAll() {
+  if (!ready) return;
+  const my = ++seq;
+  try {
+    const d = await rpc("dash_main", params());
+    if (my !== seq) return;
+    $("gate").hidden = true;
+    renderStatus(d.run, d.fx, null);
+    renderKpis(d.kpi || {});
+    renderSectors(d.sectors || [], d.kpi || {});
+    renderHist(d.hist || [], d.kpi?.med_m2);
+    renderHeat(d.heat || []);
+    renderWeekly(d.weekly || [], d.run);
+    renderCuts(d.cuts || []);
+    renderQuality(d.q);
+    renderSources(d.sources || []);
+  } catch (e) { if (my === seq) pageError(e); return; }
+  loadList();
+  loadReview();
+}
+
+async function loadReview() {
+  const box = $("review");
+  try {
+    const rows = await rpc("dash_review", { p_mun: val(st.mun), p_src: val(st.src) }) || [];
+    $("revCount").textContent = rows.length >= 80 ? "80+" : String(rows.length);
+    if (!rows.length) { box.replaceChildren(el("p", { class: "note", text: "No hay publicaciones marcadas con estos filtros." })); return; }
+    const tb = el("tbody");
+    for (const r of rows) {
+      const listed = (r.currency === "DOP" ? "RD$" : "US$") + n0(r.price);
+      tb.append(el("tr", {},
+        el("td", { class: "ttl" }, el("a", { href: r.url, target: "_blank", rel: "noopener", text: r.title || "(sin título)" }),
+          el("div", { class: "faint", style: "font-size:12px", text: MUN_SHORT[r.municipio] || r.municipio || "" })),
+        el("td", { class: "r num", text: listed }, r.price_source !== "publicado" ? el("div", { class: "faint", style: "font-size:11px", text: "corregido a " + usd(r.price_usd) }) : null),
+        el("td", { class: "r num", text: n0(r.area_m2) }),
+        el("td", { class: "r num", text: n0(r.usd_m2) }),
+        el("td", {}, el("span", { class: "pill cut", text: r.review_reason })),
+        el("td", { class: "num faint", style: "font-size:12px", text: (r.text_prices || []).length ? (r.text_prices || []).map(k).join(", ") : "—" })));
+    }
+    box.replaceChildren(el("table", { class: "list" }, el("thead", {}, el("tr", {},
+      ...["Publicación", "Precio publicado", "m²", "US$/m²", "Motivo", "Precios en el texto"].map((h, i) => el("th", { class: i && i < 4 ? "r" : "", text: h })))), tb));
+  } catch (e) { box.replaceChildren(el("p", { class: "err", text: explain(e) })); }
+}
+
+async function loadList() {
+  $("listTitle").textContent = st.sector ? "Publicaciones en " + st.sector : "Publicaciones";
+  const box = $("list");
+  try {
+    const rows = await rpc("dash_list", { ...params(), p_sector: st.sector, p_sort: st.sort }) || [];
+    const tb = el("tbody");
+    for (const r of rows) {
+      tb.append(el("tr", {},
+        el("td", { class: "ttl" }, el("a", { href: r.url, target: "_blank", rel: "noopener", text: r.title || "(sin título)" }),
+          el("div", { class: "faint", style: "font-size:12px", text: [r.sector !== "(sin sector)" ? r.sector : null, MUN_SHORT[r.municipio] || r.municipio, SOURCES[r.source] || r.source, r.n_postings > 1 ? `en ${r.n_postings} publicaciones` : null].filter(Boolean).join(" · ") })),
+        el("td", { class: "r num", text: usd(r.price_usd) },
+          r.price_source !== "publicado"
+            ? el("div", { style: "font-size:11px" }, el("span", { class: "pill cut", title: r.price_source === "texto" ? "Precio tomado del título o la descripción" : "Error de digitación corregido por regla", text: "corregido" }), " ", el("span", { class: "faint", text: "publicado " + (r.currency === "DOP" ? "RD$" : "US$") + n0(r.price) }))
+            : r.currency === "DOP" ? el("div", { class: "faint", style: "font-size:11px", text: "RD$" + n0(r.price) }) : null),
+        el("td", { class: "r num", text: n0(r.area_m2), title: r.area_from_text ? "Área tomada del texto" : "" }, r.area_from_text ? el("span", { class: "faint", text: "*" }) : null),
+        el("td", { class: "r num", text: n0(r.usd_m2) }),
+        el("td", { class: "r num", text: [r.bedrooms, r.bathrooms, r.parking].map(v => v ?? "–").join(" / ") }),
+        el("td", {}, el("span", { class: "pill", text: r.condicion })),
+        el("td", { class: "r num", text: r.days_listed == null ? "–" : r.days_listed + " d" })));
+    }
+    const t = el("table", { class: "list" }, el("thead", {}, el("tr", {},
+      ...["Publicación","Precio","m²","US$/m²","Hab/Baño/Parq","Condición","Publicada"].map((h, i) => el("th", { class: i && i < 5 || i === 6 ? "r" : "", text: h })))), tb);
+    box.replaceChildren(rows.length ? t : el("p", { class: "note", text: "Ninguna publicación coincide con estos filtros todavía." }));
+    if (st.sector) box.prepend(el("button", { class: "btn", type: "button", style: "margin-bottom:8px", text: "Ver todos los sectores", onclick: () => { st.sector = null; loadAll(); } }));
+  } catch (e) { box.replaceChildren(el("p", { class: "err", text: explain(e) })); }
+}
+
+// ---- renderers ------------------------------------------------------------
+function renderStatus(run, fx, storedAt) {
+  const chip = $("runChip"), txt = $("runText");
+  if (!run) { chip.className = "chip"; txt.textContent = "Sin corridas aún"; }
+  else if (run.status === "running") { chip.className = "chip live"; txt.textContent = `Recolectando · página ${run.pages_done}/${run.last_page ?? "?"}`; }
+  else if (run.status === "cards_done") { chip.className = "chip live"; txt.textContent = `Leyendo detalles · ${n0(run.details_done)} listas`; }
+  else if (run.status === "error") { chip.className = "chip bad"; txt.textContent = "La última corrida falló"; chip.title = run.error || ""; }
+  else { chip.className = "chip ok"; txt.textContent = "Actualizado " + new Date(run.finished_at).toLocaleDateString("es-DO", { month: "short", day: "numeric" }); }
+  if (fx) { const f = $("fxChip"); f.hidden = false; f.textContent = "RD$" + Number(fx.usd_dop).toFixed(2) + " / US$"; }
+  if (storedAt) chip.title = "Datos al " + new Date(storedAt).toLocaleTimeString();
+}
+function renderKpis(x) {
+  const items = [
+    ["Publicaciones activas", n0(x.n), "después de limpieza y deduplicación"],
+    ["Mediana US$/m²", n0(x.med_m2), "precio de oferta por m² construido"],
+    ["Precio mediano", k(x.med_price), "tamaño mediano " + n0(x.med_area) + " m²"],
+    ["Precio en US$", x.usd_share == null ? "–" : x.usd_share + "%", "el resto en RD$"],
+    ["Tiempo publicado (mediana)", x.med_days == null || (x.with_date || 0) < 30 ? "–" : n0(x.med_days) + " días",
+      (x.with_date || 0) < 30 ? "se completa al leer las fechas de publicación" : "desde la fecha de publicación · " + n0(x.with_date) + " con fecha"],
+  ];
+  $("kpis").replaceChildren(...items.map(([l, v, s]) => el("div", { class: "kpi" }, el("span", { class: "eyebrow", text: l }), el("span", { class: "v", text: v }), el("span", { class: "s", text: s }))));
+}
+function niceMax(v) { const steps = [1000,1500,2000,2500,3000,4000,5000,6000,8000,10000,12000]; return steps.find(s => s >= v) || v; }
+function renderSectors(rows, kpi) {
+  const box = $("sectors");
+  if (!rows.length) {
+    box.replaceChildren(el("p", { class: "note", text: kpi.n ? `El sector sale de la página de cada publicación. Por ahora ${n0(kpi.with_sector || 0)} de ${n0(kpi.n)} lo tienen; el ranking aparece cuando un sector llega a 5 publicaciones.` : "Sin datos todavía." }));
+    return;
+  }
+  const max = niceMax(Math.max(...rows.map(r => r.p75)));
+  const ticks = [0, .25, .5, .75, 1].map(f => Math.round(max * f));
+  const axis = el("div", { class: "axis", "aria-hidden": "true" }, el("span"), el("div", { class: "ticks" }, ...ticks.map(t => el("span", { style: `left:${t / max * 100}%`, text: t >= 1000 ? (t/1000) + "k" : String(t) }))), el("span"));
+  const list = el("div", { class: "rank" });
+  for (const r of rows) {
+    const L = (v) => (v / max * 100).toFixed(2) + "%";
+    const labLeft = r.p75 / max > .8 ? `calc(${L(r.p25)} - 58px)` : `calc(${L(r.p75)} + 6px)`;
+    list.append(el("button", { class: "rrow", type: "button", "aria-pressed": String(st.sector === r.sector),
+        "aria-label": `${r.sector}: mediana ${n0(r.med)} US$ por metro cuadrado, ${r.n} publicaciones`,
+        onclick: () => { st.sector = st.sector === r.sector ? null : r.sector; loadList(); renderSectorsPressed(list, rows); $("list").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }); } },
+      el("span", { class: "rname", title: r.sector }, r.sector, el("small", { text: (MUN_SHORT[r.municipio] || r.municipio) + " · " + k(r.price) })),
+      el("span", { class: "track" },
+        el("span", { class: "iqr", style: `left:${L(r.p25)};width:calc(${L(r.p75)} - ${L(r.p25)})` }),
+        el("span", { class: "med", style: `left:${L(r.med)}` }),
+        el("span", { class: "lab", style: `left:${labLeft}`, text: n0(r.med) })),
+      el("span", { class: "rn", text: "n=" + r.n })));
+  }
+  box.replaceChildren(axis, list);
+}
+function renderSectorsPressed(list, rows) { [...list.children].forEach((b, i) => b.setAttribute("aria-pressed", String(rows[i].sector === st.sector))); }
+
+function renderHist(rows, med) {
+  const box = $("hist");
+  const counts = Array.from({ length: 25 }, (_, i) => (rows.find(r => r.b === i + 1)?.n) || 0);
+  const total = counts.reduce((a, b) => a + b, 0);
+  $("histNote").textContent = total ? n0(total) + " publicaciones" : "";
+  if (!total) { box.replaceChildren(el("p", { class: "note", text: "Sin datos todavía." })); return; }
+  const W = 520, H = 170, pl = 8, pr = 8, pt = 10, pb = 22, bw = (W - pl - pr) / 25, maxc = Math.max(...counts);
+  const y = (c) => pt + (H - pt - pb) * (1 - c / maxc);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Histograma de US$ por metro cuadrado">`;
+  for (const f of [.5, 1]) s += `<line x1="${pl}" x2="${W - pr}" y1="${y(maxc * f)}" y2="${y(maxc * f)}" stroke="var(--line-2)" />`;
+  counts.forEach((c, i) => { if (c) s += `<rect x="${(pl + i * bw + 1).toFixed(1)}" y="${y(c).toFixed(1)}" width="${(bw - 2).toFixed(1)}" height="${(H - pb - y(c)).toFixed(1)}" rx="1.5" fill="${i === 24 ? "var(--ink-3)" : "var(--lagoon)"}" opacity="${i === 24 ? .5 : .85}"><title>${i === 24 ? "6,000+" : (i * 250).toLocaleString() + "–" + ((i + 1) * 250).toLocaleString()} US$/m²: ${c} publicaciones</title></rect>`; });
+  s += `<line x1="${pl}" x2="${W - pr}" y1="${H - pb}" y2="${H - pb}" stroke="var(--line)" />`;
+  for (let t = 0; t <= 6000; t += 1000) s += `<text x="${pl + t / 250 * bw}" y="${H - 6}" text-anchor="${t === 0 ? "start" : "middle"}">${t ? t / 1000 + "k" : "0"}</text>`;
+  s += `<text x="${W - pr}" y="${H - 6}" text-anchor="end">+</text>`;
+  if (med) { const x = pl + Math.min(med, 6000) / 250 * bw; s += `<line x1="${x}" x2="${x}" y1="${pt - 4}" y2="${H - pb}" stroke="var(--amber)" stroke-width="1.5" stroke-dasharray="3 3" /><text x="${x + 4}" y="${pt + 4}" style="fill:var(--amber)">mediana ${Math.round(med).toLocaleString("en-US")}</text>`; }
+  box.innerHTML = s + "</svg>";
+}
+function renderHeat(rows) {
+  const cols = [[1, "1 hab"], [2, "2 hab"], [3, "3 hab"], [4, "4+ hab"]];
+  const vals = rows.filter(r => r.n >= 5).map(r => r.med);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  const t = el("table", { class: "heat" }, el("thead", {}, el("tr", {}, el("th", { text: "" }), ...cols.map(([, l]) => el("th", { class: "r", text: l })))));
+  const tb = el("tbody");
+  for (const m of MUNS) {
+    const tr = el("tr", {}, el("td", { text: MUN_SHORT[m], title: m, style: "font-weight:600" }));
+    for (const [b] of cols) {
+      const r = rows.find(x => x.municipio === m && x.b === b);
+      const td = el("td", { class: "cell" });
+      if (r && r.n >= 5) {
+        const f = hi > lo ? (r.med - lo) / (hi - lo) : .5;
+        td.style.background = `color-mix(in srgb, var(--lagoon) ${Math.round(8 + f * 40)}%, transparent)`;
+        td.append(n0(r.med), el("small", { text: "n=" + r.n }));
+      } else td.append(el("span", { class: "faint", text: "·" }));
+      tr.append(td);
+    }
+    tb.append(tr);
+  }
+  t.append(tb);
+  $("heat").replaceChildren(t);
+}
+function renderWeekly(rows, run) {
+  const box = $("weekly");
+  if (rows.length < 2) {
+    box.replaceChildren(el("p", { class: "note", text: "Este gráfico se llena a medida que se acumulan las corridas semanales. La primera corrida " + (run ? "empezó el " + new Date(run.started_at).toLocaleDateString("es-DO", { month: "short", day: "numeric", year: "numeric" }) : "no ha empezado") + ", así que por ahora todas las publicaciones cuentan como vistas esa semana. Desde la segunda corrida, cada barra muestra oferta realmente nueva." }));
+    return;
+  }
+  const W = 520, H = 150, pl = 8, pr = 8, pt = 10, pb = 22, bw = (W - pl - pr) / rows.length, maxc = Math.max(...rows.map(r => r.n));
+  const y = (c) => pt + (H - pt - pb) * (1 - c / maxc);
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Publicaciones nuevas por semana">`;
+  rows.forEach((r, i) => { s += `<rect x="${(pl + i * bw + 2).toFixed(1)}" y="${y(r.n).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${(H - pb - y(r.n)).toFixed(1)}" rx="1.5" fill="var(--lagoon)" opacity="${i === rows.length - 1 ? 1 : .6}"><title>Semana del ${r.week}: ${r.n}</title></rect>`; });
+  s += `<line x1="${pl}" x2="${W - pr}" y1="${H - pb}" y2="${H - pb}" stroke="var(--line)" />`;
+  const every = Math.ceil(rows.length / 6);
+  rows.forEach((r, i) => { if (i % every === 0 || i === rows.length - 1) s += `<text x="${pl + i * bw + bw / 2}" y="${H - 6}" text-anchor="middle">${new Date(r.week + "T12:00").toLocaleDateString("es-DO", { month: "short", day: "numeric" })}</text>`; });
+  box.innerHTML = s + "</svg>";
+}
+function renderCuts(rows) {
+  const box = $("cuts");
+  if (!rows.length) { box.replaceChildren(el("p", { class: "note", text: "Todavía no hay cambios de precio. Se detectan comparando una corrida semanal con la siguiente, así que los primeros aparecen después de la segunda corrida." })); return; }
+  const tb = el("tbody");
+  for (const r of rows) tb.append(el("tr", {},
+    el("td", { class: "ttl" }, el("a", { href: r.url, target: "_blank", rel: "noopener", text: r.title }), el("div", { class: "faint", style: "font-size:12px", text: [r.sector, MUN_SHORT[r.municipio] || r.municipio].filter(Boolean).join(" · ") })),
+    el("td", { class: "r num", text: k(r.prev_usd) + " → " + k(r.new_usd) }),
+    el("td", { class: "r" }, el("span", { class: "pill" + (r.pct < 0 ? " cut" : ""), text: (r.pct > 0 ? "+" : "") + r.pct + "%" }))));
+  box.replaceChildren(el("div", { class: "tbl-wrap" }, el("table", { class: "list" }, tb)));
+}
+function renderSources(rows) {
+  // header chip summarizes all portals
+  const running = rows.filter(s => s.last_run?.status === "running").length;
+  const failed = rows.filter(s => s.last_run?.status === "error").length;
+  const lastDone = rows.map(s => s.last_run?.finished_at).filter(Boolean).sort().pop();
+  if (running) { $("runChip").className = "chip live"; $("runText").textContent = `Actualizando · ${running} de ${rows.length} portales en curso`; }
+  else if (failed) { $("runChip").className = "chip bad"; $("runText").textContent = `${failed} portal${failed > 1 ? "es" : ""} con error`; }
+  else if (lastDone) { $("runChip").className = "chip ok"; $("runText").textContent = "Actualizado " + new Date(lastDone).toLocaleDateString("es-DO", { month: "short", day: "numeric" }); }
+  const tb = el("tbody");
+  for (const s of rows) {
+    const r = s.last_run || {};
+    let state;
+    if (r.status === "done") state = el("span", { class: "pill", text: "al día · " + new Date(r.finished_at).toLocaleDateString("es-DO", { day: "numeric", month: "short" }) });
+    else if (r.status === "running") {
+      const prog = r.total ? `${n0(r.details_done)} de ${n0(r.total)} páginas` : `${n0(r.pages_done)} páginas`;
+      state = el("span", { class: "pill cut", text: "recorriendo · " + prog });
+    } else state = el("span", { class: "pill", text: r.status || "—" });
+    tb.append(el("tr", {},
+      el("td", { style: "font-weight:600", text: SOURCES[s.source] || s.source }),
+      el("td", { class: "r num", text: n0(s.active) }),
+      el("td", { class: "r num", text: n0(s.clean) }),
+      el("td", { class: "r num", text: n0(s.med_usd_m2) }),
+      el("td", {}, state, r.error ? el("div", { class: "err", style: "font-size:11px", text: String(r.error).slice(0, 120) }) : null)));
+  }
+  $("sources").replaceChildren(el("table", { class: "list" }, el("thead", {}, el("tr", {},
+    ...["Fuente", "Activas", "En estadísticas", "Mediana US$/m²", "Última corrida"].map((h, i) => el("th", { class: i && i < 4 ? "r" : "", text: h })))), tb));
+}
+function renderQuality(qs) {
+  if (!qs) return;
+  $("quality").textContent = `Calidad de datos: ${n0(qs.sale_listings)} publicaciones de venta activas, ${n0(qs.clean)} usadas en las estadísticas. Precios corregidos: ${n0(qs.fixed_from_text)} con el precio del título o la descripción y ${n0(qs.fixed_by_rule)} por errores de digitación (ceros de más o de menos, moneda equivocada). Áreas tomadas del texto: ${n0(qs.area_from_text)}. Para revisar: ${n0(qs.to_review)}. Sin área utilizable: ${n0(qs.bad_area)}. Excluidas por no ser apartamentos (casas, locales, edificios, villas): ${n0(qs.non_apartment)}; fuera del Gran Santo Domingo: ${n0(qs.outside_sd)}. El resto son duplicados o alquileres. Páginas de detalle leídas: ${n0(qs.with_details)}. Retiradas del portal: ${n0(qs.delisted_total)}.`;
+}
+
+
+$("refresh").addEventListener("click", () => loadAll());
+
+// ---- login ------------------------------------------------------------------
+function showApp(on) {
+  $("app").hidden = !on; $("login").hidden = on; $("logout").hidden = !on; $("refresh").hidden = !on;
+  if (!on) { $("gate").hidden = true; $("runText").textContent = "Sin sesión"; $("runChip").className = "chip"; }
+}
+let timer = null;
+function start() {
+  ready = true; showApp(true);
+  const skel = () => el("div", { class: "kpi" }, el("span", { class: "eyebrow", text: "Cargando" }), el("div", { class: "skel", style: "width:60%;height:24px" }));
+  $("kpis").replaceChildren(skel(), skel(), skel(), skel(), skel());
+  $("runText").textContent = "Cargando datos…";
+  loadAll();
+  clearInterval(timer); timer = setInterval(() => { if (!document.hidden) loadAll(); }, 5 * 60 * 1000);
+}
+function stop() { ready = false; clearInterval(timer); showApp(false); setTimeout(() => $("email").focus(), 0); }
+
+$("loginForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const btn = $("loginBtn"), err = $("loginErr");
+  err.textContent = "";
+  const email = $("email").value.trim(), password = $("password").value;
+  if (!email || !password) { err.textContent = "Escribe tu correo y tu contraseña."; return; }
+  btn.disabled = true; btn.textContent = "Entrando…";
+  const { error } = await supa.auth.signInWithPassword({ email, password });
+  btn.disabled = false; btn.textContent = "Entrar";
+  if (error) {
+    err.textContent = /invalid login/i.test(error.message) ? "Correo o contraseña incorrectos." :
+      /email not confirmed/i.test(error.message) ? "Tu correo no está confirmado todavía. Revisa tu bandeja de entrada." :
+      /rate|too many/i.test(error.message) ? "Demasiados intentos. Espera unos minutos." :
+      /failed to fetch|network|load failed/i.test(error.message) ? "No hay conexión con el servidor. Revisa tu internet e inténtalo de nuevo." : "No se pudo entrar: " + error.message;
+    return;
+  }
+  $("password").value = "";
+});
+$("forgot").addEventListener("click", async () => {
+  const email = $("email").value.trim(), err = $("loginErr");
+  if (!email) { err.textContent = "Escribe tu correo arriba y vuelve a pulsar «Olvidé mi contraseña»."; return; }
+  const { error } = await supa.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+  err.textContent = error ? "No se pudo enviar el correo: " + error.message : "Si el correo tiene cuenta, te llegará un enlace para cambiar la contraseña.";
+});
+$("resetForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const pw = $("newpass").value, err = $("resetErr");
+  if (pw.length < 10) { err.textContent = "Usa al menos 10 caracteres."; return; }
+  const { error } = await supa.auth.updateUser({ password: pw });
+  if (error) { err.textContent = "No se pudo guardar: " + error.message; return; }
+  $("resetForm").hidden = true; $("loginForm").hidden = false; $("newpass").value = "";
+  history.replaceState(null, "", location.pathname);
+  start();
+});
+$("logout").addEventListener("click", () => supa.auth.signOut());
+
+supa.auth.onAuthStateChange((event, session) => {
+  if (event === "PASSWORD_RECOVERY") { showApp(false); $("loginForm").hidden = true; $("resetForm").hidden = false; $("newpass").focus(); return; }
+  if (event === "SIGNED_OUT" || !session) { stop(); return; }
+  if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && !ready && $("resetForm").hidden) start();
+});
+// don't depend only on the initial event: ask for the session explicitly, and fall back to the login form
+(async () => {
+  const fallback = setTimeout(() => { if (!ready && $("app").hidden && $("resetForm").hidden) stop(); }, 4000);
+  try {
+    const { data } = await supa.auth.getSession();
+    if (/type=recovery/.test(location.hash)) return;
+    if (data?.session) { if (!ready) start(); } else stop();
+  } catch (_) { stop(); }
+  finally { clearTimeout(fallback); }
+})();
+
+</script>
+</body>
+</html>
